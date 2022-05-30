@@ -60,6 +60,7 @@ userRouter.post('/add-post',async(req,res)=>{
   console.log('called_________-')
     const userData = req.user
     let postData = req.body
+    console.log('POST DATA_________-',postData)
     await Post.create(postData)
     res.send('post called')
 })
