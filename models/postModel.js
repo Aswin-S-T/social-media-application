@@ -1,9 +1,14 @@
 const mongoose = require("mongoose");
 const postSchema = new mongoose.Schema(
   {
+    postId:{type:String},
     userId: { type: String, required: true },
     title: { type: String },
     description: { type: String },
+    path:{type:String},
+    like:{type:Number,default:0},
+    comment:{type:Number,default:0},
+    share:{type:Number,default:0}
   },
   {
     timestamps: true,

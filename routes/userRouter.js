@@ -66,6 +66,7 @@ userRouter.post('/add-post',async(req,res)=>{
 })
 
 userRouter.get('/get-my-post/:userId',async(req,res)=>{
+  console.log('POST CALLED')
   let post = await Post.find({userId:req.params.userId})
   res.send(post)
 })
@@ -77,6 +78,33 @@ userRouter.delete('/delete-my-post/:postId',async(req,res)=>{
       res.send('Successfully deleted')
     }
   })
+})
+
+userRouter.get('/all-post',async(req,res)=>{
+  let post = await Post.find({})
+  let postData = post.find((x)=>x.userId == '628dad561f7d2ac39f3c28cf')
+  res.send(post)
+})
+
+userRouter.post('/like/:postId',async(req,res)=>{
+  let postId = req.params.postId
+  await Post.findOne({})
+})
+
+userRouter.get('/users',async(req,res)=>{
+  await User.find({}).then((response)=>{
+    res.send(response)
+  })
+})
+
+userRouter.get('/users/:id',async(req,res)=>{
+  const userId = req.params.id
+  const userData = await User.find({_id:userId})
+  if(userData){
+    res.send(userData)
+  }else{
+    res.send({message:'User Not Found'})
+  }
 })
 
 module.exports = userRouter;
