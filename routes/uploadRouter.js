@@ -2,6 +2,7 @@ const express = require("express");
 const uploadRouter = express.Router();
 const multer = require("multer");
 var path = require('path');
+const Post=require("../models/postModel");
 const storage = multer.diskStorage({
   destination(req, file, cb) {
     cb(null, "../frontend/public/uploads/"); // express.static(path.join(__dirname, '../frontend/src/uploads'))
@@ -9,7 +10,7 @@ const storage = multer.diskStorage({
   filename(req, file, cb) {
     
     console.log("BODY*********", req.body.userId);
-    let id = req.body.userId + "_" + Date.now();
+    let id = Date.now();
     cb(null, `${id}.jpg`);
   },
 });
@@ -19,9 +20,12 @@ const upload = multer({ storage });
 
 
 
-uploadRouter.post("/", upload.single("image"), (req, res) => {
+uploadRouter.post("/", upload.single("image"), async(req, res) => {
     console.log('BODY____________',req.body)
-  res.send(`/${req.file.path}`);
+    // let postData = req.body
+    // console.log('POST DATA_________-',postData)
+    // let post = await Post.create(postData)
+    res.send(`/${req.file.path}`);
 });
 
 uploadRouter.get('/all-images',(req,res)=>{

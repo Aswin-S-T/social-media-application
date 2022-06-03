@@ -8,7 +8,8 @@ const postSchema = new mongoose.Schema(
     path:{type:String},
     like:{type:Number,default:0},
     comment:{type:Number,default:0},
-    share:{type:Number,default:0}
+    share:{type:Number,default:0},
+    time:{type:String}
   },
   {
     timestamps: true,

@@ -6,6 +6,9 @@ const { generateToken, verifyToken } = require("../utils/utils");
 const userRouter = express.Router();
 const bcrypt = require("bcryptjs");
 const Post=require("../models/postModel");
+var mongoose = require('mongoose');
+var myId = mongoose.Types.ObjectId();
+const FriendRequest = require('../models/friendsModel')
 
 userRouter.get(
   "/",
@@ -61,14 +64,21 @@ userRouter.post('/add-post',async(req,res)=>{
     const userData = req.user
     let postData = req.body
     console.log('POST DATA_________-',postData)
-    await Post.create(postData)
-    res.send('post called')
+    let post = await Post.create(postData)
+    res.send(post)
 })
 
 userRouter.get('/get-my-post/:userId',async(req,res)=>{
   console.log('POST CALLED')
+  let userData = await User.find({_id:req.params.userId})
+  console.log('USER DATA=========>',userData)
+  let postData = {}
   let post = await Post.find({userId:req.params.userId})
-  res.send(post)
+  postData.userId = userData[0]._id;
+  postData.username = userData[0].username;
+  postData.postDetails = post
+  // post.user = userData[0]
+  res.send(postData)
 })
 
 userRouter.delete('/delete-my-post/:postId',async(req,res)=>{
@@ -92,9 +102,12 @@ userRouter.post('/like/:postId',async(req,res)=>{
 })
 
 userRouter.get('/users',async(req,res)=>{
-  await User.find({}).then((response)=>{
-    res.send(response)
-  })
+  const query = req.query
+  console.log('QUERY==========',query)
+  let users = await User.find({})
+  users = await User.find({$nor:[{'_id':query.username}]});
+  // users = users.find((x)=>{console.log(x)})
+  res.send(users)
 })
 
 userRouter.get('/users/:id',async(req,res)=>{
@@ -105,6 +118,43 @@ userRouter.get('/users/:id',async(req,res)=>{
   }else{
     res.send({message:'User Not Found'})
   }
+})
+
+userRouter.post('/like',async(req,res)=>{
+  let postId = req.body.postId;
+  let userId = req.body.userId
+
+})
+
+userRouter.post('/add-friend',async(req,res)=>{
+  let from = req.body.fromId
+  let user = await User.findOne({_id:from})
+  console.log('AASER=========',user)
+  let requestData = {
+    fromId:req.body.fromId,
+    toId:req.body.toId,
+    username:user.username
+  }
+  await FriendRequest.create(requestData).then((response)=>{
+    res.send(response)
+  })
+})
+
+userRouter.get('/get-friend-request/:userId',async(req,res)=>{
+  let userId = req.params.userId;
+  let request = await FriendRequest.find({toId:userId})
+  let users = await User.find({_id:userId})
+  // console.log('USERS============',request)
+  console.log('user*********',request)
+  let aswins = request.find((x)=>{console.log(x)})
+ console.log('ASWINS=============',aswins)
+  let requestData = {}
+  requestData.count = request.length
+  requestData.request = request
+
+  
+
+  res.send(requestData)
 })
 
 module.exports = userRouter;
