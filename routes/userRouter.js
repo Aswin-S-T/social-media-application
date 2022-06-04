@@ -54,6 +54,8 @@ userRouter.post(
         });
         return;
       }
+    }else{
+      res.send({message:'User Not Found!'})
     }
     res.status(401).send({ message: "Invalid email or password" });
   })
