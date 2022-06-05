@@ -70,16 +70,30 @@ userRouter.post('/add-post',async(req,res)=>{
     res.send(post)
 })
 
+// userRouter.get('/get-my-post/:userId',async(req,res)=>{
+//   console.log('ID===========',req.params.userId)
+//   console.log('POST CALLED')
+//   let userData = await User.find({_id:req.params.userId})
+//   console.log('USER DATA=========>',userData)
+//   let postData = {}
+//   let post = await Post.find({userId:req.params.userId})
+//   postData.userId = userData[0]._id;
+//   postData.username = userData[0].username;
+//   postData.postDetails = post
+//   // post.user = userData[0]
+//   res.send(postData)
+// })
+
 userRouter.get('/get-my-post/:userId',async(req,res)=>{
-  console.log('POST CALLED')
-  let userData = await User.find({_id:req.params.userId})
+  console.log('ID=============>',req.params.userId)
+    let userData = await User.find({_id:req.params.userId})
   console.log('USER DATA=========>',userData)
   let postData = {}
   let post = await Post.find({userId:req.params.userId})
   postData.userId = userData[0]._id;
   postData.username = userData[0].username;
   postData.postDetails = post
-  // post.user = userData[0]
+  post.user = userData[0]
   res.send(postData)
 })
 
