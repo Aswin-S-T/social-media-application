@@ -17,7 +17,7 @@ app.use(express.urlencoded({extended:true}))
 app.use(cors())
 app.use('/uploads', express.static(path.join(__dirname, '../frontend/src/uploads')));
 
-console.log('PATH=========>',path.join(__dirname,'../frontend/uploads')) // path.join(__dirname+'../test/karma.conf.js')
+// console.log('PATH=========>',path.join(__dirname,'../frontend/uploads')) // path.join(__dirname+'../test/karma.conf.js')
 
 app.get('/',(req,res)=>{
     res.send('nodejs is working')

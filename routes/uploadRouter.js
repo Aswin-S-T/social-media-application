@@ -9,8 +9,9 @@ const storage = multer.diskStorage({
   },
   filename(req, file, cb) {
     
-    console.log("BODY*********", req.body.userId);
-    let id = Date.now();
+    // console.log("BODY*********", req.body.userId);
+    // let id = Number(new Date());
+    let id = req.body.time
     cb(null, `${id}.jpg`);
   },
 });
