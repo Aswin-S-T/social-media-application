@@ -9,6 +9,7 @@ const Post=require("../models/postModel");
 var mongoose = require('mongoose');
 var myId = mongoose.Types.ObjectId();
 const FriendRequest = require('../models/friendsModel')
+var ObjectId = require('mongoose').Types.ObjectId; 
 
 userRouter.get(
   "/",
@@ -107,11 +108,33 @@ userRouter.delete('/delete-my-post/:postId',async(req,res)=>{
   })
 })
 
+// userRouter.get('/all-post',async(req,res)=>{
+//   let post = await Post.find({})
+//   let postData = post.find((x)=>x.userId == '628dad561f7d2ac39f3c28cf')
+//   res.send(post)
+// })
+
 userRouter.get('/all-post',async(req,res)=>{
+  // let post = await Post.aggregate([
+  //   { $lookup:
+  //       {
+  //          from: "users",
+  //          localField: "userId",
+  //          foreignField: "ObjectId(_id)",
+  //          as: "postData"
+  //       }
+  //   }])
   let post = await Post.find({})
-  let postData = post.find((x)=>x.userId == '628dad561f7d2ac39f3c28cf')
+  // console.log('POST ID : ',post[0].userId)
+  let userId = post[0].userId
+  let username = await User.findOne({_id : userId})
+  // console.log('USER + ',username.username)
+  // let postData = post.find((x)=>x.userId == '628dad561f7d2ac39f3c28cf')
+  post[username] = username.username
   res.send(post)
 })
+
+
 
 userRouter.post('/like/:postId',async(req,res)=>{
   let postId = req.params.postId
