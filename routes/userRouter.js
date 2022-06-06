@@ -67,6 +67,7 @@ userRouter.post('/add-post',async(req,res)=>{
     let postData = req.body
     console.log('POST DATA_________-',postData)
     let post = await Post.create(postData)
+    console.log('post db=============',post)
     res.send(post)
 })
 
