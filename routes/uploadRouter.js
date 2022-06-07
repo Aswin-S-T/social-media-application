@@ -10,7 +10,7 @@ const storage = multer.diskStorage({
     // cb(null, "uploads/"); // express.static(path.join(__dirname, '../frontend/src/uploads'))
   },
   filename(req, file, cb) {
-    
+    console.log('FILE============>',file)
     // console.log("BODY*********", req.body.userId);
     // let id = Number(new Date());
     let id = req.body.time
