@@ -10,6 +10,7 @@ module.exports.connect = function(done){
         if(err){
             console.log('Err : ',err)
         }else{
+            console.log('connected!!!!!')
             console.log('Mongodb connected successfully....')
         }
     })
