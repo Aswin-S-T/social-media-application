@@ -15,7 +15,7 @@ db.connect()
 app.use(express.json())
 app.use(express.urlencoded({extended:true}))
 app.use(cors())
-app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
+app.use('/uploads', express.static(path.join(__dirname, './uploads')));
 
 // console.log('PATH=========>',path.join(__dirname,'../frontend/uploads')) // path.join(__dirname+'../test/karma.conf.js')
 

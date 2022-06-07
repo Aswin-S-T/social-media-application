@@ -5,7 +5,9 @@ var path = require('path');
 const Post=require("../models/postModel");
 const storage = multer.diskStorage({
   destination(req, file, cb) {
-    cb(null, "uploads/"); // express.static(path.join(__dirname, '../frontend/src/uploads'))
+    console.log('FILE======>',file ? file : 'no file')
+     cb(null, path.resolve(__dirname, 'build'))
+    // cb(null, "uploads/"); // express.static(path.join(__dirname, '../frontend/src/uploads'))
   },
   filename(req, file, cb) {
     
