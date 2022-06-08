@@ -87,7 +87,7 @@ userRouter.post('/upload', async (req, res) => {
       let post = await Post.create(req.body)
   console.log('post db=============',post)
   res.send(post)
-      res.json({msg:'uploaded successfully'})
+      // res.json({msg:'uploaded successfully'})
       // console.log(fileStr);
   } catch (err) {
       console.error('Error ',err);
@@ -115,11 +115,12 @@ userRouter.get('/get-my-post/:userId',async(req,res)=>{
   console.log('USER DATA=========>',userData)
   let postData = {}
   let post = await Post.find({userId:req.params.userId})
-  postData.userId = userData[0]._id;
-  postData.username = userData[0].username;
-  postData.postDetails = post
-  post.user = userData[0]
-  res.send(postData)
+  console.log('post==============>',post)
+  // postData.userId = userData[0]._id;
+  // postData.username = userData[0].username;
+  // postData.postDetails = post
+  // post.user = userData[0]
+  res.send(post)
 })
 
 userRouter.delete('/delete-my-post/:postId',async(req,res)=>{
