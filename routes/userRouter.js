@@ -10,6 +10,7 @@ var mongoose = require('mongoose');
 var myId = mongoose.Types.ObjectId();
 const FriendRequest = require('../models/friendsModel')
 var ObjectId = require('mongoose').Types.ObjectId; 
+const {cloudinary} = require('../utils/helpers')
 
 userRouter.get(
   "/",
@@ -71,6 +72,28 @@ userRouter.post('/add-post',async(req,res)=>{
     console.log('post db=============',post)
     res.send(post)
 })
+
+userRouter.post('/upload', async (req, res) => {
+  console.log('helllo')
+  console.log('req body=========',req.body)
+  try {
+      const fileStr = req.body.data;
+      const uploadResponse = await cloudinary.uploader.upload(fileStr,{
+          upload_preset:'cloudinary_react',
+         
+          
+      })
+      // public_id:Date.now()
+      let post = await Post.create(req.body)
+  console.log('post db=============',post)
+  res.send(post)
+      res.json({msg:'uploaded successfully'})
+      // console.log(fileStr);
+  } catch (err) {
+      console.error('Error ',err);
+      res.status(500).json({ err: 'Something went wrong' });
+  }
+});
 
 // userRouter.get('/get-my-post/:userId',async(req,res)=>{
 //   console.log('ID===========',req.params.userId)
