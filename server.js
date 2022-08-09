@@ -1,4 +1,6 @@
 const express = require("express");
+const http = require("http");
+// const { Server } = require("socket.io");
 const userRouter = require("./routes/userRouter");
 const app = express();
 const port = process.env.PORT || 8000;
@@ -9,16 +11,48 @@ const uploadRouter = require("./routes/uploadRouter");
 const { cloudinary } = require("./utils/helpers");
 require("dotenv").config();
 
+const server = http.createServer(app);
+
+const socketIo = require('socket.io');
+const io = socketIo(server, {
+  cors: {
+    origin: 'http://localhost:3001',
+    methods: ['GET', 'POST'],
+    credentials: true,
+  },
+});
+const NEW_CHAT_MESSAGE_EVENT = 'NEW_CHAT_MESSAGE_EVENT';
+io.on('connection', (socket) => {
+  console.log(`${socket.id} connected`);
+  // Join a conversation
+  const { roomId } = socket.handshake.query;
+  socket.join(roomId);
+  // Listen for new messages
+  socket.on(NEW_CHAT_MESSAGE_EVENT, (data) => {
+    io.in(roomId).emit(NEW_CHAT_MESSAGE_EVENT, data);
+  });
+  // Leave the room if the user closes the socket
+  socket.on('disconnect', () => {
+    socket.leave(roomId);
+  });
+});
+
 // Database connection
 db.connect();
 
 // Middlwares
 app.use(express.json({ limit: "50mb" }));
 app.use(express.urlencoded({ limit: "50mb", extended: true }));
+// const io = new Server(server, {
+//   cors: {
+//     origin: "http://localhost:3001",
+//     methods: ["GET", "POST"],
+//   },
+// });
 var corsOptions = {
-  origin: 'http://localhost:3001',
-  optionsSuccessStatus: 200 // some legacy browsers (IE11, various SmartTVs) choke on 204
-}
+  origin: "http://localhost:3001",
+  optionsSuccessStatus: 200, // some legacy browsers (IE11, various SmartTVs) choke on 204
+};
 app.use(cors(corsOptions));
 app.use("/uploads", express.static(path.join(__dirname, "./uploads")));
 
@@ -27,6 +61,23 @@ app.use("/uploads", express.static(path.join(__dirname, "./uploads")));
 app.get("/", (req, res) => {
   res.send("nodejs is working");
 });
+
+// Chat configuration
+// io.on("connection", (socket) => {
+//   console.log("USER CONNECTED : ", socket.id);
+//   socket.on("join_room", (data) => {
+//     socket.join(data);
+//     console.log(`User with id : ${socket.id} connected room ${data}`);
+//   });
+//   socket.on("send-message", (data) => {
+//     console.log(data);
+//     socket.to(data.room).emit("receive-message", data);
+//   });
+//   socket.on("disconnect", () => {
+//     console.log("User disconnected!!!!");
+//   });
+// });
+// End chat configuration
 
 app.post("/api/upload", async (req, res) => {
   console.log("helllo");
@@ -62,7 +113,7 @@ app.get("/api/images", async (req, res) => {
 app.use("/api/v1/user", userRouter);
 app.use("/api/v1/uploads", uploadRouter);
 
-app.listen(port, () => {
+server.listen(port, () => {
   console.log("DIR NMAE : ", __dirname);
   console.log(`Server is running at the port ${port}`);
 });
